@@ -97,7 +97,7 @@ async function loadLazy(doc) {
 
 function loadAtJs() {
   const adobetargetscript = document.createElement('script');
-  adobetargetscript.setAttribute('src', 'https://akasjain-lf.github.io/public/at_v1.js');
+  adobetargetscript.setAttribute('src', '/scripts/at_v1.js');
   document.head.append(adobetargetscript);
 }
 
