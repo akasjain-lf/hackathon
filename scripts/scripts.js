@@ -95,7 +95,7 @@ async function loadLazy(doc) {
   sampleRUM.observe(main.querySelectorAll('picture > img'));
 }
 
-export async function loadAtJs() {
+function loadAtJs() {
   const adobetargetscript = document.createElement('script');
   adobetargetscript.setAttribute('src', 'https://akasjain-lf.github.io/public/at_v1.js');
   document.head.append(adobetargetscript);

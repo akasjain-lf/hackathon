@@ -30,6 +30,11 @@ window.getTargetOffer = (block, ul) => {
               document.documentElement.style.opacity = "1";
           },
           error: function() {
+              console.log("Some error occured in Target response. Rendering default content");
+              [...ul.children].forEach((row, i) => {
+                  row.style.display = i == 0 ? 'block' : 'none';
+              });
+              block.append(ul);
               document.documentElement.style.opacity = "1";
           }
       });
