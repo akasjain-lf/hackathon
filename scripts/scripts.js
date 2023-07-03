@@ -78,8 +78,10 @@ async function loadEager(doc) {
  */
 async function loadLazy(doc) {
   const main = doc.querySelector('main');
-  await loadBlocks(main);
 
+  await loadAtJs();
+
+  await loadBlocks(main);
   const { hash } = window.location;
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
@@ -91,6 +93,12 @@ async function loadLazy(doc) {
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
+}
+
+export async function loadAtJs() {
+  const adobetargetscript = document.createElement('script');
+  adobetargetscript.setAttribute('src', 'https://akasjain-lf.github.io/public/at_v1.js');
+  document.head.append(adobetargetscript);
 }
 
 /**
