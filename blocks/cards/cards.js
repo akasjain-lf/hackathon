@@ -1,6 +1,6 @@
-import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
+import { createOptimizedPicture, getMetadata, getTargetOffer } from '../../scripts/lib-franklin.js';
 
-export default function decorate(block) {
+export default async function decorate(block) {
   /* change to ul, li */
   const ul = document.createElement('ul');
   [...block.children].forEach((row) => {
@@ -14,5 +14,14 @@ export default function decorate(block) {
   });
   ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
   block.textContent = '';
-  block.append(ul);
+
+
+  if(getMetadata('usetarget') && getMetadata('mboxcards')) {
+    if(typeof(window.adobe) !== 'undefined' && typeof(window.adobe) !== 'undefined' && typeof(window.adobe.target) !== 'undefined') {
+      await getTargetOffer(block, ul, getMetadata('mboxcards'));
+      console.log('Rendering block from Target decisioning');
+    }
+  } else {
+    block.append(ul);
+  }
 }

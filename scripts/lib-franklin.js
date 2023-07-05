@@ -648,6 +648,34 @@ export function setup() {
   }
 }
 
+export function getTargetOffer(block, parent, mbox) {
+  window.adobe.target.getOffer({
+     mbox: mbox,
+     success: function(offer) {
+       console.log(offer);
+       const content = offer[0].content[0];
+       var exp = content.index;
+       console.log(exp);
+
+       [...parent.children].forEach((row, i) => {
+         row.style.display = exp.some(value => value === i) ? 'block' : 'none';
+       });
+
+       block.append(parent);
+
+       document.documentElement.style.opacity = "1";
+     },
+     error: function() {
+       console.log("Some error occurred in Target response. Rendering default content");
+       [...parent.children].forEach((row, i) => {
+         row.style.display = i == 0 ? 'block' : 'none';
+       });
+       block.append(parent);
+       document.documentElement.style.opacity = "1";
+     }
+   });
+};
+
 /**
  * Auto initializiation.
  */
