@@ -1,0 +1,23 @@
+name: Test Lighthouse score
+on: [push,pull_request]
+
+jobs:
+  lighthouse-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: npm install
+      - name: Run Lighthouse
+        uses: foo-software/lighthouse-check-action@master
+        id: lighthouseCheck
+        with:
+          urls: "https://${{github.event.pull_request.head.ref}}--${{github.event.pull_request.head.repo.name}}--${{ github.event.pull_request.user.login }}.hlx.page/"
+          accessToken: ${{ secrets.LIGHTHOUSE_CHECK_GITHUB_ACCESS_TOKEN }}
+          prCommentEnabled: true
+          prCommentSaveOld: true
+      - name: Handle Lighthouse Check results
+        uses: foo-software/lighthouse-check-status-action@master
+        with:
+          lighthouseCheckResults: ${{ steps.lighthouseCheck.outputs.lighthouseCheckResults }}
+          minAccessibilityScore: "90"
+          minPerformanceScore: "85"
