@@ -1,9 +1,9 @@
-import { createOptimizedPicture } from '../../scripts/lib-franklin.js';
+import { createOptimizedPicture, getMetadata, readBlockConfig } from '../../scripts/lib-franklin.js';
 
 
-window.getTargetOffer = (block, ul) => {
+window.getTargetOffer = (block, ul, mbox) => {
     window.adobe.target.getOffer({
-          mbox: 'franklin',
+          mbox: mbox,
           success: function(offer) {
               console.log(offer)
               const content = offer[0].content[0]
@@ -22,15 +22,11 @@ window.getTargetOffer = (block, ul) => {
                   });
               }
               block.append(ul);
-              /*adobe.target.applyOffer({
-                  mbox: 'franklin',
-                  offer: offer
-              });*/
 
               document.documentElement.style.opacity = "1";
           },
           error: function() {
-              console.log("Some error occured in Target response. Rendering default content");
+              console.log("Some error occurred in Target response. Rendering default content");
               [...ul.children].forEach((row, i) => {
                   row.style.display = i == 0 ? 'block' : 'none';
               });
@@ -55,15 +51,25 @@ export default function decorate(block) {
     });
     ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
     block.textContent = '';
-    //block.append(ul);
+
+    if(getMetadata('usetarget') && getMetadata('mbox')) {
+        if(typeof(window.adobe) !== 'undefined' && typeof(adobe) !== 'undefined' && typeof(adobe.target) !== 'undefined') {
+            getTargetOffer(block, ul, getMetadata('mbox'));
+            console.log('Rendering block from Target decisioning');
+        }
+    } else {
+        block.append(ul);
+    }
 
     if(typeof(window.adobe) === 'undefined' || typeof(adobe) === 'undefined' || typeof(adobe.target) === 'undefined') {
         console.log("undefined values");
     }
 
+/*
     if(typeof(window.adobe) !== 'undefined' && typeof(adobe) !== 'undefined' && typeof(adobe.target) !== 'undefined') {
         getTargetOffer(block, ul);
         console.log('Rendering block from Target decisioning');
     }
+*/
 }
 
