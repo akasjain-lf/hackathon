@@ -97,7 +97,11 @@ async function loadLazy(doc) {
 
 function loadAtJs() {
   const adobetargetscript = document.createElement('script');
-  adobetargetscript.setAttribute('src', '/scripts/at_v1.js');
+  if(window.location.hostname.search('hlx.live') === -1) {
+    adobetargetscript.setAttribute('src', '/scripts/at_v1_preview.js');
+  } else {
+    adobetargetscript.setAttribute('src', '/scripts/at_v1_live.js');
+  }
   document.head.append(adobetargetscript);
 }
 
