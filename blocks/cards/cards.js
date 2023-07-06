@@ -12,16 +12,23 @@ export default async function decorate(block) {
     });
     ul.append(li);
   });
-  ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
+  ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{width: '750'}])));
   block.textContent = '';
 
+  var shouldUseTarget;
+  var mboxName;
+  var parent = block.parentElement.parentElement;
+  if (parent) {
+    shouldUseTarget = parent.getAttribute('data-usetarget');
+    mboxName = parent.getAttribute('data-mbox');
+  }
 
-  if(getMetadata('usetarget') && getMetadata('mboxcards')) {
-    if(typeof(window.adobe) !== 'undefined' && typeof(window.adobe) !== 'undefined' && typeof(window.adobe.target) !== 'undefined') {
-      await getTargetOffer(block, ul, getMetadata('mboxcards'));
+  if (shouldUseTarget && mboxName) {
+    if (typeof (window.adobe) !== 'undefined' && typeof (window.adobe) !== 'undefined' && typeof (window.adobe.target) !== 'undefined') {
+      await getTargetOffer(block, ul, mboxName);
       console.log('Rendering block from Target decisioning');
+    } else {
+      block.append(ul);
     }
-  } else {
-    block.append(ul);
   }
 }

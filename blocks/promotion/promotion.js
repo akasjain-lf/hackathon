@@ -16,9 +16,18 @@ export default async function decorate(block) {
     ul.querySelectorAll('img').forEach((img) => img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])));
     block.textContent = '';
 
-    if(getMetadata('usetarget') && getMetadata('mbox')) {
+    //var cls = block.getAttribute('data-block-name') + '-container';
+    var shouldUseTarget;
+    var mboxName;
+    var parent = block.parentElement.parentElement;
+    if(parent) {
+        shouldUseTarget = parent.getAttribute('data-usetarget');
+        mboxName = parent.getAttribute('data-mbox');
+    }
+
+    if(shouldUseTarget && mboxName) {
         if(typeof(window.adobe) !== 'undefined' && typeof(adobe) !== 'undefined' && typeof(adobe.target) !== 'undefined') {
-            await getTargetOffer(block, ul, getMetadata('mbox'));
+            await getTargetOffer(block, ul, mboxName);
             console.log('Rendering block from Target decisioning');
         }
     } else {
